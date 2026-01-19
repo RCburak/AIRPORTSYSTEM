@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  background-color: #0b0f1a;
+  color: white;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  overflow-x: hidden; /* Tam ekran deneyimi için sadece x eksenini gizle */
+}
+
+/* FullCalendar Stil Düzenlemeleri */
+.fc {
+  --fc-border-color: #1e293b;
+  --fc-page-bg-color: #0b0f1a;
+}
+
+.fc-col-header-cell-cushion, 
+.fc-timeline-slot-cushion {
+  font-size: 10px !important;
+  text-transform: uppercase;
+  color: #94a3b8 !important; /* Daha okunabilir bir gri */
+  text-decoration: none !important;
+}
+
+.fc-timeline-event {
+  border: none !important;
+  padding: 4px !important;
+  border-radius: 6px !important;
+}
+
+/* Özel Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 10px;
+}
