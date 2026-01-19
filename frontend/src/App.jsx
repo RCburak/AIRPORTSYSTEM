@@ -3,6 +3,7 @@ import MainLayout from './layout/MainLayout';
 import AirportScheduler from './components/AirportScheduler';
 import { initialEvents } from './data';
 import { motion, AnimatePresence } from 'framer-motion';
+import FlightDetailModal from './components/scheduler/FlightDetailModal'; // Yeni oluşturacağız
 
 function App() {
   const [events, setEvents] = useState(initialEvents);
@@ -10,7 +11,6 @@ function App() {
   const [selectedFlight, setSelectedFlight] = useState(null);
 
   return (
-    // Uygulama girişi için hafif bir fade-in animasyonu
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }}
@@ -28,6 +28,16 @@ function App() {
             setAiMessage={setAiMessage} 
             setSelectedFlight={setSelectedFlight} 
           />
+        </AnimatePresence>
+
+        {/* Modal Bileşeni */}
+        <AnimatePresence>
+          {selectedFlight && (
+            <FlightDetailModal 
+              flight={selectedFlight} 
+              onClose={() => setSelectedFlight(null)} 
+            />
+          )}
         </AnimatePresence>
       </MainLayout>
     </motion.div>
