@@ -4,7 +4,7 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useScheduler } from '../hooks/useScheduler';
 import { GateLabel } from './scheduler/GateLabel';
-import { Plane } from 'lucide-react'; // Hata veren eksik ikon burada
+import { Plane } from 'lucide-react';
 import './scheduler-custom.css';
 
 export default function AirportScheduler({ events, setEvents, setAiMessage, setSelectedFlight }) {
@@ -21,21 +21,24 @@ export default function AirportScheduler({ events, setEvents, setAiMessage, setS
     const filteredEvents = useMemo(() => events.filter(e => resources.some(r => r.id === e.resourceId)), [events, resources]);
 
     return (
-      <div className="group flex flex-col bg-airport-900/40 rounded-2xl border border-slate-800/60 overflow-hidden mb-6 transition-all hover:border-slate-700/80 shadow-lg">
-        {/* LİNE 25: bg-linear-to-r olarak güncellendi */}
-        <div className="p-4 bg-linear-to-r from-slate-900 to-transparent border-b border-slate-800 flex justify-between items-center">
+      /* min-h-112.5 kullanımı ile v4 standart uyarısı giderildi */
+      <div className="group flex flex-col bg-airport-900/40 rounded-2xl border border-slate-800/60 overflow-hidden mb-8 transition-all hover:border-slate-700/80 shadow-lg min-h-112.5">
+        
+        {/* Bölüm Başlığı */}
+        <div className="p-4 bg-linear-to-r from-slate-900 to-transparent border-b border-slate-800 flex justify-between items-center shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-1 h-5 bg-airport-accent rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
             <h2 className="text-slate-100 font-bold text-xs uppercase tracking-[0.15em]">{title}</h2>
           </div>
           <div className="flex items-center space-x-4">
              <span className="text-[10px] px-2 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/20 font-mono">
-               Online: {resources.filter(r => !r.isClosed).length}
+               Active Gates: {resources.filter(r => !r.isClosed).length}
              </span>
           </div>
         </div>
 
-        <div className="p-1 scheduler-container">
+        {/* Takvim Alanı */}
+        <div className="flex-1 p-1 scheduler-container relative overflow-hidden">
           <FullCalendar
             plugins={[resourceTimelinePlugin, interactionPlugin]}
             initialView="resourceTimelineDay"
@@ -61,7 +64,6 @@ export default function AirportScheduler({ events, setEvents, setAiMessage, setS
             stickyHeaderDates={true}
             eventBorderColor="transparent"
             eventContent={(eventInfo) => (
-              /* LİNE 64: bg-linear-to-r olarak güncellendi */
               <div className="flex items-center h-full px-2 space-x-2 bg-linear-to-r from-airport-blue/80 to-blue-600/80 backdrop-blur-md rounded-md overflow-hidden border border-white/10">
                 <Plane size={10} className="text-white shrink-0" />
                 <span className="text-[10px] font-bold truncate text-white uppercase">{eventInfo.event.title}</span>
@@ -74,7 +76,7 @@ export default function AirportScheduler({ events, setEvents, setAiMessage, setS
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4 overflow-y-auto pr-2 custom-scrollbar pb-10">
+    <div className="h-full flex flex-col space-y-2 pr-2">
       <PierSection title="Main Pier A - Int. Flights" blockName="Pier A" />
       <PierSection title="Pier B - Domestic Support" blockName="Pier B" />
       <PierSection title="Remote Apron Area" blockName="Apron" />
