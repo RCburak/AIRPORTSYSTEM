@@ -1,0 +1,35 @@
+/* FullCalendar Dark Mode & Modernization */
+.fc {
+  --fc-border-color: rgba(30, 41, 59, 0.5);
+  --fc-page-bg-color: transparent;
+  background: transparent !important;
+  font-size: 11px;
+}
+
+.fc-timeline-slot {
+  background: transparent !important;
+}
+
+.fc-timeline-header-row {
+  background: rgba(15, 23, 42, 0.8) !important;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #94a3b8;
+}
+
+.fc-resource-timeline-divider {
+  border-left: 2px solid #38bdf8 !important; /* Mavi ayrım çizgisi */
+}
+
+/* Scrollbar Tasarımı */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
+}

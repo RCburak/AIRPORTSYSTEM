@@ -1,17 +1,59 @@
 import React from 'react';
+import { Settings, ShieldAlert, ShieldCheck, PlaneTakeoff } from 'lucide-react';
 
 export const GateLabel = ({ info, onToggle }) => {
   const { id, title, extendedProps } = info.resource;
+  const isClosed = extendedProps?.isClosed; // useScheduler'dan gelen durum
+
   return (
-    <div className="flex items-center justify-between p-2 w-full h-full bg-slate-900/30 border-l-4 border-blue-600">
-      <div className="flex flex-col">
-        <span className="text-[11px] font-black text-white uppercase">{title}</span>
-        <span className="text-[8px] text-slate-500 font-bold uppercase">{extendedProps?.type}</span>
+    <div className={`
+      flex items-center justify-between px-3 py-2 w-full h-full transition-all duration-300
+      ${isClosed 
+        ? 'bg-red-500/10 border-l-4 border-red-500 shadow-[inset_10px_0_20px_rgba(239,68,68,0.05)]' 
+        : 'bg-airport-900/40 border-l-4 border-airport-blue shadow-[inset_10px_0_20px_rgba(56,189,248,0.02)]'}
+    `}>
+      <div className="flex items-center space-x-3">
+        {/* İkon: Kapı tipine göre uçak ikonu */}
+        <div className={`
+          p-1.5 rounded-lg border transition-colors
+          ${isClosed ? 'bg-red-500/20 border-red-500/30 text-red-400' : 'bg-airport-800 border-slate-700 text-airport-blue'}
+        `}>
+          <PlaneTakeoff size={14} />
+        </div>
+
+        <div className="flex flex-col leading-tight">
+          <span className={`text-xs font-black tracking-wider uppercase ${isClosed ? 'text-red-400' : 'text-white'}`}>
+            {title}
+          </span>
+          <div className="flex items-center space-x-1">
+            <span className="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">
+              {extendedProps?.type || 'Standard Gate'}
+            </span>
+            {isClosed && (
+              <span className="text-[8px] bg-red-500 text-white px-1 rounded animate-pulse">
+                MAINTENANCE
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-      <button onClick={() => onToggle(id)} className="p-1 bg-slate-800 rounded text-slate-400">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        </svg>
+
+      {/* Kontrol Butonu */}
+      <button 
+        onClick={() => onToggle(id)} 
+        className={`
+          group relative p-2 rounded-xl border transition-all duration-500 active:scale-90
+          ${isClosed 
+            ? 'bg-red-500 text-white border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.4)]' 
+            : 'bg-airport-800 text-slate-400 border-slate-700 hover:border-airport-blue hover:text-airport-blue'}
+        `}
+        title={isClosed ? "Open Gate" : "Close for Maintenance"}
+      >
+        {isClosed ? (
+          <ShieldAlert size={14} className="animate-bounce" />
+        ) : (
+          <Settings size={14} className="group-hover:rotate-90 transition-transform duration-500" />
+        )}
       </button>
     </div>
   );
