@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 def check_conflict(flight, gate_id, allocated_flights, buffer_minutes=15):
     """
-    Gönderdiğin koddaki buffer_time (tampon süre) kısıtını uygular.
+    Belirlenen tampon süreyi (buffer_time) dikkate alarak zaman çakışmalarını kontrol eder.
     """
     if gate_id == "APRON": return False
     
@@ -27,13 +27,13 @@ def check_conflict(flight, gate_id, allocated_flights, buffer_minutes=15):
 
 def optimize_gate_allocation(flights, gates):
     """
-    Gönderdiğin koddaki 'Yürüme Maliyeti' minimizasyonu mantığını uygular.
+    Gerçek mesafe verilerini kullanarak toplam yürüme maliyetini minimize eden algoritma.
     """
     # Uçuşları başlangıç saatine göre sırala
     sorted_flights = sorted(flights, key=lambda x: x['start'])
     allocated = []
     
-    # Koddaki 15 dakikalık tampon süre
+    # 15 dakikalık operasyonel tampon süre
     BUFFER_TIME = 15 
 
     for flight in sorted_flights:
@@ -44,10 +44,11 @@ def optimize_gate_allocation(flights, gates):
         pax_count = flight['extendedProps'].get('occupancy', 0)
 
         for gate in gates:
+            # Kapı kapalıysa veya Apron ise atama yapma
             if gate.get('isClosed', False) or gate['id'] == "APRON": 
                 continue
             
-            # Teknik Uyumluluk: Wide uçak Narrow kapıya giremez
+            # Teknik Uyumluluk: Wide-body uçaklar sadece Wide kapılara girebilir
             if aircraft_type == 'Wide' and gate.get('type') == 'Narrow': 
                 continue
             
@@ -55,14 +56,13 @@ def optimize_gate_allocation(flights, gates):
             if check_conflict(flight, gate['id'], allocated, BUFFER_TIME): 
                 continue
 
-            # MİLLİ MALİYET HESABI: Yolcu Sayısı x Mesafe
-            # Kapı numarasını mesafe çarpanı olarak kullanıyoruz (Örn: Gate 1=10m, Gate 10=100m)
-            try:
-                gate_num = int(gate['id'].split('_')[1])
-            except:
-                gate_num = 5 # Varsayılan mesafe çarpanı
+            # --- GÜNCELLENMİŞ GERÇEK MESAFE HESABI ---
+            # data.js'den gelen 'distance' değerini alıyoruz
+            actual_distance = gate.get('distance', 500) # Veri yoksa varsayılan 500m
                 
-            current_walking_cost = pax_count * (gate_num * 10)
+            # MİLLİ MALİYET HESABI: Yolcu Sayısı x Gerçek Mesafe
+            current_walking_cost = pax_count * actual_distance
+            # ----------------------------------------
             
             # En düşük yürüme maliyetli kapıyı seç
             if current_walking_cost < min_walking_cost:
